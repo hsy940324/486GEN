@@ -7,6 +7,7 @@ from config import SCREEN_WIDTH, SCREEN_HEIGHT, FONT_SIZE, WHITE, BLACK, RED, GR
 import process
 
 running = True
+isGameStarting = False
 playerCors = {}
 playerChoice = [0,0]
 userChoice = ""
@@ -18,8 +19,36 @@ playerClassIdx = [0,0]
 timeWaiting = False
 endCountDownTime = 0
 result = ""
-currentWinner = ''
+currentWinner = ""
 reStartTime = 0
+isGameEnd = False
+
+def initData():
+    global playerChoice
+    global userChoice
+    global computerChoice
+    global playerScore
+    global computerScore
+    global playerClassIdx
+    global timeWaiting
+    global endCountDownTime
+    global result
+    global currentWinner
+    global reStartTime
+    global isGameEnd
+
+    playerChoice = [0,0]
+    userChoice = ""
+    computerChoice = ""
+    playerScore = [0,0]
+    computerScore = 0
+    playerClassIdx = [0,0]
+    timeWaiting = False
+    endCountDownTime = 0
+    result = ""
+    currentWinner = ""
+    reStartTime = 0
+    isGameEnd = False
 
 def makePlayerCors():
     result =  {
@@ -76,6 +105,7 @@ def decideWinner():
 
 def pygameHandler():
     global running
+    global isGameStarting
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -83,6 +113,8 @@ def pygameHandler():
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 if not timeWaiting:
+                    isGameStarting = True
+                    initData()
                     startCountDown()
                     break
 
@@ -121,6 +153,8 @@ def run():
     global endCountDownTime
     global result
     global reStartTime
+    global isGameEnd
+    global isGameStarting
 
     playerCors = makePlayerCors()
     process.init()
@@ -137,8 +171,6 @@ def run():
     cap.set(cv2.CAP_PROP_BUFFERSIZE,1)
 
     startTime = 0
-    isGameEnd = False
-
 
     while running:
         ret,frame=cap.read() # 과거에 캡처된 이미지 읽어서 버리기
@@ -182,6 +214,7 @@ def run():
                 reStartTime = 0
                 finalWinner = decideWinner()
                 if finalWinner:
+                    isGameStarting = False
                     isGameEnd = True
                 else:
                     startCountDown()
@@ -189,6 +222,10 @@ def run():
         if isGameEnd:
             result_text = font.render(f'Winner : {finalWinner}', True, BLACK)
             screen.blit(result_text, (SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
+
+        if not isGameStarting:
+            result_text = font.render('Press the space bar to start the game', True, BLACK)
+            screen.blit(result_text, (10, SCREEN_HEIGHT - 50))
 
         # Multi Mode Line Draw
         start_pos = (int(SCREEN_WIDTH//2),0)
