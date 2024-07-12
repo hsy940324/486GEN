@@ -1,71 +1,32 @@
 # 모듈 로딩
-import tflite_runtime.interpreter as tflite
 import numpy as np
 import time
 import cv2 
-import tensorflow as tf
 import pygame
-import random
-import math
-import mediapipe as mp
 from config import SCREEN_WIDTH, SCREEN_HEIGHT, FONT_SIZE, WHITE, BLACK, RED, GREEN, COUNTDOWN, POINTTOWIN
 import process
 
 running = True
-playerCors = []
+playerCors = {}
+playerChoice = [0,0]
 userChoice = ""
 computerChoice = ""
-playerScore = [0]
+playerScore = [0,0]
 computerScore = 0
 classList = '_ Scissors Rock Paper'.split()
 playerClassIdx = [0]
+timeWaiting = False
+endCountDownTime = 0
+result = ""
+currentWinner = ''
+reStartTime = 0
 
 def makePlayerCors():
     result =  {
-        0: {'min_x':0, 'min_y':0,'max_x':SCREEN_WIDTH,'max_y':SCREEN_HEIGHT}
+        0: {'min_x':0, 'min_y':0,'max_x':SCREEN_WIDTH//2,'max_y':SCREEN_HEIGHT},
+        1: {'min_x':SCREEN_WIDTH//2, 'min_y':0,'max_x':SCREEN_WIDTH,'max_y':SCREEN_HEIGHT}
     }
     return result
-
-def getPlayerCount(screen, font):
-    input_box = pygame.Rect(200, 200, 140, 32)
-    color_inactive = pygame.Color('lightskyblue3')
-    color_active = pygame.Color('dodgerblue2')
-    color = color_inactive
-    active = False
-    text = ''
-    done = False
-
-    while not done:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if input_box.collidepoint(event.pos):
-                    active = not active
-                else:
-                    active = False
-                color = color_active if active else color_inactive
-            if event.type == pygame.KEYDOWN:
-                if active:
-                    if event.key == pygame.K_RETURN:
-                        done = True
-                    elif event.key == pygame.K_BACKSPACE:
-                        text = text[:-1]
-                    else:
-                        text += event.unicode
-
-        screen.fill((30, 30, 30))
-        txt_surface = font.render(text, True, color)
-        width = max(200, txt_surface.get_width() + 10)
-        input_box.w = width
-        screen.blit(txt_surface, (input_box.x + 5, input_box.y + 5))
-        pygame.draw.rect(screen, color, input_box, 2)
-
-        pygame.display.flip()
-        pygame.time.Clock().tick(30)
-
-    return int(text)
 
 def startCountDown():
     global timeWaiting
@@ -76,38 +37,39 @@ def startCountDown():
     
 def calGameResult():
     global result
+    global playerChoice
     global userChoice
     global computerChoice
     global computerScore
-    global multiPlayerScore
     global currentWinner
     global playerClassIdx
+    global playerScore
+    global classList
     
     # Game Logic
-    userChoice = classList[playerClassIdx[0]]
-    computerChoice = random.choice(['Rock', 'Paper', 'Scissors'])
-    if userChoice == computerChoice:
+    playerChoice[0] = classList[playerClassIdx[0]]
+    playerChoice[1] = classList[playerClassIdx[1]]
+    if playerChoice[0] == playerChoice[1]:
         currentWinner = ''
         result = 'Draw'
-    elif (userChoice == 'Rock' and computerChoice == 'Scissors') or \
-            (userChoice == 'Scissors' and computerChoice == 'Paper') or \
-            (userChoice == 'Paper' and computerChoice == 'Rock'):
-        currentWinner = 'Player'
+    elif (playerChoice[0] == 'Rock' and playerChoice[1] == 'Scissors') or \
+            (playerChoice[0] == 'Scissors' and playerChoice[1] == 'Paper') or \
+            (playerChoice[0] == 'Paper' and playerChoice[1] == 'Rock'):
+        currentWinner = 'Player 1'
         playerScore[0] += 1
-        result = 'User wins'
+        result = 'Player 1 wins'
     else:
-        currentWinner = 'Computer'
-        computerScore += 1
-        result = 'Computer wins'
+        currentWinner = 'Player 2'
+        playerScore[1] += 1
+        result = 'Player 2 wins'
 
 def decideWinner():
-    global computerScore
-    global multiPlayerScore
+    global playerScore
 
     resultWinner = ''
     if playerScore[0] == POINTTOWIN:
         resultWinner = 'Player'
-    elif computerScore == POINTTOWIN:
+    elif playerScore[1] == POINTTOWIN:
         resultWinner = 'Computer'
     
     return resultWinner
@@ -125,21 +87,18 @@ def pygameHandler():
                     break
 
 def printResult(screen, font):
-    global playMode
-    global userChoice
-    global computerChoice
-    global multiPlayerScore
+    global playerChoice
     global computerScore
     global currentWinner
     global reStartTime
 
-    result_text = font.render(f'Player: {userChoice}', True, WHITE)
+    result_text = font.render(f'Player 1: {playerChoice[0]}', True, WHITE)
     screen.blit(result_text, (10, 10))
-    result_text = font.render(f'Computer: {computerChoice}', True, WHITE)
+    result_text = font.render(f'Player 2: {playerChoice[1]}', True, WHITE)
     screen.blit(result_text, (10, 25))
-    result_text = font.render(f'Player Score: {playerScore[0]}', True, WHITE)
+    result_text = font.render(f'Player 1 Score: {playerScore[0]}', True, WHITE)
     screen.blit(result_text, (10, 40))
-    result_text = font.render(f'Computer Score: {computerScore}', True, WHITE)
+    result_text = font.render(f'Player 2 Score: {playerScore[1]}', True, WHITE)
     screen.blit(result_text, (10, 55))
     if currentWinner:
         result_text = font.render(f'{currentWinner} win!', True, BLACK)
@@ -153,6 +112,10 @@ def printResult(screen, font):
 
 def run():
     global playerClassIdx
+    global timeWaiting
+    global endCountDownTime
+    global result
+    global reStartTime
 
     playerCors = makePlayerCors()
     process.init()
@@ -169,13 +132,6 @@ def run():
     cap.set(cv2.CAP_PROP_BUFFERSIZE,1)
 
     startTime = 0
-    result = ""
-    timeWaiting = False
-    endCountDownTime = 0
-    multiPlayerScore = [0,0]
-    endGameFlag = False
-    reStartTime = 0
-    currentWinner = ''
     isGameEnd = False
 
 
@@ -195,7 +151,10 @@ def run():
         fps = 1/(curTime - startTime)
         startTime = curTime
 
-        playerClassIdx = process.processImage(frame,playerCors)
+        # Multi Mode Line Draw
+        cv2.line(frame, (int(SCREEN_WIDTH//2),0), (int(SCREEN_HEIGHT//2), int(SCREEN_HEIGHT)), RED, thickness=1)
+
+        process.processImage(frame,playerCors,playerClassIdx)
 
         if ret:
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
