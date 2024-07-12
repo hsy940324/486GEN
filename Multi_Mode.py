@@ -14,7 +14,7 @@ computerChoice = ""
 playerScore = [0,0]
 computerScore = 0
 classList = '_ Scissors Rock Paper'.split()
-playerClassIdx = [0]
+playerClassIdx = [0,0]
 timeWaiting = False
 endCountDownTime = 0
 result = ""
@@ -68,9 +68,9 @@ def decideWinner():
 
     resultWinner = ''
     if playerScore[0] == POINTTOWIN:
-        resultWinner = 'Player'
+        resultWinner = 'Player 1'
     elif playerScore[1] == POINTTOWIN:
-        resultWinner = 'Computer'
+        resultWinner = 'Player 2'
     
     return resultWinner
 
@@ -91,15 +91,12 @@ def printResult(screen, font):
     global computerScore
     global currentWinner
     global reStartTime
+    global playerScore
 
     result_text = font.render(f'Player 1: {playerChoice[0]}', True, WHITE)
-    screen.blit(result_text, (10, 10))
-    result_text = font.render(f'Player 2: {playerChoice[1]}', True, WHITE)
-    screen.blit(result_text, (10, 25))
-    result_text = font.render(f'Player 1 Score: {playerScore[0]}', True, WHITE)
     screen.blit(result_text, (10, 40))
-    result_text = font.render(f'Player 2 Score: {playerScore[1]}', True, WHITE)
-    screen.blit(result_text, (10, 55))
+    result_text = font.render(f'Player 2: {playerChoice[1]}', True, WHITE)
+    screen.blit(result_text, (SCREEN_WIDTH//2+10, 40))
     if currentWinner:
         result_text = font.render(f'{currentWinner} win!', True, BLACK)
         screen.blit(result_text, (SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
@@ -109,6 +106,14 @@ def printResult(screen, font):
 
     if reStartTime == 0:
         reStartTime = time.time() + 2
+
+def printScore(screen, font):
+    global playerScore
+
+    result_text = font.render(f'Player 1 Score: {playerScore[0]}', True, WHITE)
+    screen.blit(result_text, (10, 10))
+    result_text = font.render(f'Player 2 Score: {playerScore[1]}', True, WHITE)
+    screen.blit(result_text, (SCREEN_WIDTH//2+10, 10))
 
 def run():
     global playerClassIdx
@@ -144,6 +149,7 @@ def run():
         screen.fill((255, 255, 255))
 
         ret,frame=cap.read() # 사진 찍기 -> (240,320,3)
+        frame_origin = frame
         if not ret: break
         
         # FPS 계산
@@ -152,9 +158,8 @@ def run():
         startTime = curTime
 
         # Multi Mode Line Draw
-        cv2.line(frame, (int(SCREEN_WIDTH//2),0), (int(SCREEN_HEIGHT//2), int(SCREEN_HEIGHT)), RED, thickness=1)
-
-        process.processImage(frame,playerCors,playerClassIdx)
+        start_pos = (int(SCREEN_WIDTH//2),0)
+        end_pos = (int(SCREEN_WIDTH//2), int(SCREEN_HEIGHT))
 
         if ret:
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -165,9 +170,10 @@ def run():
         if timeWaiting:
             nowTime = time.time()
             remain_time = round((endCountDownTime - nowTime)//1.5)
-            result_text = font.render(str(remain_time), True, BLACK)
+            result_text = font.render(str(remain_time), True, RED)
             screen.blit(result_text, (SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
             if remain_time <= 0:
+                process.processImage(frame_origin,playerCors,playerClassIdx)
                 timeWaiting = False
                 calGameResult()
 
@@ -187,7 +193,8 @@ def run():
             result_text = font.render(f'Winner : {finalWinner}', True, BLACK)
             screen.blit(result_text, (SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
 
-
+        printScore(screen,font)
+        pygame.draw.line(screen, BLACK, start_pos, end_pos, 5)
         pygame.display.flip()
         clock.tick(30)
 

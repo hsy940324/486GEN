@@ -14,6 +14,7 @@ input_dtype = input_details[0]['dtype']
 
 def get_hand_img(img):
     mp_hands = mp.solutions.hands
+    print(img.shape)
 
     with mp_hands.Hands(
             model_complexity=0,
@@ -71,14 +72,15 @@ def processImage(frame, cors, idxList):
     frame = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
 
     # 모델의 입력 형태로 수정: (1,320,320,3)
-    frame = cv2.resize(frame, (IMG_SIZE,IMG_SIZE))
+    
     # frame = np.expand_dims(frame, 0)
 
     for id, cor in cors.items():
-
+        
         img = frame[cor["min_y"] : cor["max_y"], cor["min_x"] : cor["max_x"]]
 
         hand_img = get_hand_img(img)
+        hand_img = cv2.resize(hand_img, (IMG_SIZE,IMG_SIZE))
         idxList[id] = get_prediction(hand_img) + 1
 
 def init():
