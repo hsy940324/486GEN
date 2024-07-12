@@ -93,13 +93,9 @@ def printResult(screen, font):
     global reStartTime
 
     result_text = font.render(f'Player: {userChoice}', True, WHITE)
-    screen.blit(result_text, (10, 10))
-    result_text = font.render(f'Computer: {computerChoice}', True, WHITE)
-    screen.blit(result_text, (10, 25))
-    result_text = font.render(f'Player Score: {playerScore[0]}', True, WHITE)
     screen.blit(result_text, (10, 40))
-    result_text = font.render(f'Computer Score: {computerScore}', True, WHITE)
-    screen.blit(result_text, (10, 55))
+    result_text = font.render(f'Computer: {computerChoice}', True, WHITE)
+    screen.blit(result_text, (SCREEN_WIDTH//2+10, 40))
     if currentWinner:
         result_text = font.render(f'{currentWinner} win!', True, BLACK)
         screen.blit(result_text, (SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
@@ -109,6 +105,15 @@ def printResult(screen, font):
 
     if reStartTime == 0:
         reStartTime = time.time() + 2
+
+def printScore(screen, font):
+    global playerScore
+    global computerScore
+
+    result_text = font.render(f'Player score: {playerScore[0]}', True, WHITE)
+    screen.blit(result_text, (10, 10))
+    result_text = font.render(f'Computer score: {computerScore}', True, WHITE)
+    screen.blit(result_text, (SCREEN_WIDTH//2+10, 10))
 
 def run():
     global playerClassIdx
@@ -184,7 +189,8 @@ def run():
             result_text = font.render(f'Winner : {finalWinner}', True, BLACK)
             screen.blit(result_text, (SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
 
-
+        printScore(screen,font)
+        
         pygame.display.flip()
         clock.tick(30)
 
