@@ -12,8 +12,11 @@ def getPlayMode(screen, font):
     # 버튼 생성
     button_width = SCREEN_WIDTH//2
     button_height = SCREEN_HEIGHT//3
-    button1 = Button('Single', (0, SCREEN_HEIGHT-button_height), RED, screen, font, width=button_width, height=button_height)
-    button2 = Button('Multi', (SCREEN_WIDTH-button_width, SCREEN_HEIGHT-button_height), GREEN, screen, font, width=button_width, height=button_height)
+    print(font)
+    pink_red = (250,128,114)
+    sky_blue = (0,191,255)
+    button1 = Button('혼자', (0, SCREEN_HEIGHT-button_height), pink_red, screen, font, width=button_width, height=button_height)
+    button2 = Button('짝꿍', (SCREEN_WIDTH-button_width, SCREEN_HEIGHT-button_height), sky_blue, screen, font, width=button_width, height=button_height)
     modeResult = ''
 
     modeSelecting = True
@@ -22,7 +25,7 @@ def getPlayMode(screen, font):
     while modeSelecting:
         # screen.fill(WHITE)
         screen.blit(background_image, (0, -50))
-        text = font.render(f"Select Play Mode", True, BLACK)
+        text = font.render(f"놀이 방법을 고르시오", True, BLACK)
         screen.blit(text, (10, 10))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
