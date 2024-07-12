@@ -1,9 +1,13 @@
 import tflite_runtime.interpreter as tflite
+import tensorflow as tf
 import numpy as np
 import mediapipe as mp
 import cv2 
 from config import IMG_SIZE
 
+# TF 모델 로딩
+# modelPath = "cropped_custom_data_with_none_model_64.h5"
+# interpreter = tf.keras.models.load_model(modelPath)
 # TFLite 모델 로딩
 modelPath = 'RPS_PreTrained_DenseNet_Augmentation.tflite'
 interpreter = tflite.Interpreter(model_path = modelPath) # 모델 로딩
@@ -11,6 +15,8 @@ interpreter.allocate_tensors() # tensor 할당
 input_details = interpreter.get_input_details()  # input tensor 정보 얻기
 output_details = interpreter.get_output_details() # output tensor 정보 얻기
 input_dtype = input_details[0]['dtype']
+
+
 
 def get_hand_img(img):
     mp_hands = mp.solutions.hands
@@ -59,7 +65,8 @@ def get_prediction(hand_img):
     hand_img = cv2.resize(hand_img, (IMG_SIZE, IMG_SIZE))
     hand_img = np.expand_dims(hand_img, 0)  
 
-
+    # label = np.argmax(interpreter.predict(hand_img, verbose=0))
+    # return label
     interpreter.set_tensor(input_details[0]['index'], hand_img.astype(input_dtype))
     interpreter.invoke()
     output_data = interpreter.get_tensor(output_details[0]['index'])[0]
@@ -81,9 +88,10 @@ def processImage(frame, cors, idxList):
 
         hand_img = get_hand_img(img)
         hand_img = cv2.resize(hand_img, (IMG_SIZE,IMG_SIZE))
-        idxList[id] = get_prediction(hand_img) + 1
+        idxList[id] = get_prediction(hand_img) + 1 if get_prediction(hand_img) != 3 else 0
 
 def init():
+    a = 1
     global input_details
     height = input_details[0]['shape'][1]
     width = input_details[0]['shape'][2]
