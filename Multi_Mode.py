@@ -168,7 +168,8 @@ def run():
     process.init()
 
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    font = pygame.font.Font(None, FONT_SIZE)
+    font_path = './game_font.ttf'
+    font = pygame.font.Font(font_path, FONT_SIZE)
     pygame.display.set_caption("Rock Paper Scissors Game")
     clock = pygame.time.Clock()
 
@@ -228,12 +229,12 @@ def run():
                     startCountDown()
 
         if isGameEnd:
-            result_text = font.render(f'Winner : {finalWinner}', True, BLACK)
+            result_text = font.render(f'승리자 : {finalWinner}', True, BLACK)
             screen.blit(result_text, (SCREEN_WIDTH//2 - 120, SCREEN_HEIGHT//2))
 
         if not isGameStarting:
             
-            result_text = font.render('Press the space bar to start the game', True, BLACK)
+            result_text = font.render('놀이 시작을 위해 스페이스 바를 누르시오.', True, BLACK)
             screen.blit(result_text, (10, SCREEN_HEIGHT - 50))
 
         # Multi Mode Line Draw 

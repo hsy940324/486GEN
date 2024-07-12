@@ -122,15 +122,15 @@ def printResult(screen, font):
     global currentWinner
     global reStartTime
 
-    result_text = font.render(f'Player: {userChoice}', True, WHITE)
+    result_text = font.render(f'사용자: {userChoice}', True, WHITE)
     screen.blit(result_text, (10, 40))
-    result_text = font.render(f'Computer: {computerChoice}', True, WHITE)
+    result_text = font.render(f'콤퓨타: {computerChoice}', True, WHITE)
     screen.blit(result_text, (SCREEN_WIDTH//2+10, 40))
     if currentWinner:
-        result_text = font.render(f'{currentWinner} win!', True, BLACK)
+        result_text = font.render(f'{currentWinner} 승리!', True, BLACK)
         screen.blit(result_text, (SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
     else:
-        result_text = font.render('Draw!', True, BLACK)
+        result_text = font.render('비김!', True, BLACK)
         screen.blit(result_text, (SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
 
     if reStartTime == 0:
@@ -140,9 +140,9 @@ def printScore(screen, font):
     global playerScore
     global computerScore
 
-    result_text = font.render(f'Player score: {playerScore[0]}', True, WHITE)
+    result_text = font.render(f'사용자 점수: {playerScore[0]}', True, WHITE)
     screen.blit(result_text, (10, 10))
-    result_text = font.render(f'Computer score: {computerScore}', True, WHITE)
+    result_text = font.render(f'콤퓨타 점수: {computerScore}', True, WHITE)
     screen.blit(result_text, (SCREEN_WIDTH//2+10, 10))
 
 def run():
@@ -158,8 +158,9 @@ def run():
     process.init()
 
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    font = pygame.font.Font(None, FONT_SIZE)
-    pygame.display.set_caption("Rock Paper Scissors Game")
+    font_path = './game_font.ttf'
+    font = pygame.font.Font(font_path, FONT_SIZE)
+    pygame.display.set_caption("가위 바위 보")
     clock = pygame.time.Clock()
 
     # 카메라 설정
@@ -217,11 +218,11 @@ def run():
                     startCountDown()
 
         if isGameEnd:
-            result_text = font.render(f'Winner : {finalWinner}', True, BLACK)
+            result_text = font.render(f'승리자 : {finalWinner}', True, BLACK)
             screen.blit(result_text, (SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
 
         if not isGameStarting:
-            result_text = font.render('Press the space bar to start the game', True, BLACK)
+            result_text = font.render('놀이 시작을 위해 스페이스 바를 누르시오.', True, BLACK)
             screen.blit(result_text, (10, SCREEN_HEIGHT - 50))
             
         printScore(screen,font)
