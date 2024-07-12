@@ -9,7 +9,7 @@ from config import IMG_SIZE
 # modelPath = "cropped_custom_data_with_none_model_64.h5"
 # interpreter = tf.keras.models.load_model(modelPath)
 # TFLite 모델 로딩
-modelPath = 'RPS_PreTrained_DenseNet_Augmentation.tflite'
+modelPath = 'cropped_custom_data_model.tflite'
 interpreter = tflite.Interpreter(model_path = modelPath) # 모델 로딩
 interpreter.allocate_tensors() # tensor 할당
 input_details = interpreter.get_input_details()  # input tensor 정보 얻기

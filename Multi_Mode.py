@@ -14,7 +14,7 @@ userChoice = ""
 computerChoice = ""
 playerScore = [0,0]
 computerScore = 0
-classList = '_ Scissors Rock Paper'.split()
+classList = 'None Scissors Rock Paper'.split()
 playerClassIdx = [0,0]
 timeWaiting = False
 endCountDownTime = 0
@@ -78,7 +78,18 @@ def calGameResult():
     # Game Logic
     playerChoice[0] = classList[playerClassIdx[1]] # 역순으로 저장해야함
     playerChoice[1] = classList[playerClassIdx[0]]
-    if playerChoice[0] == playerChoice[1]:
+    if playerChoice[0] == 'None' and playerChoice[1] == 'None':
+        currentWinner = ''
+        result = 'Draw'
+    elif playerChoice[0] == 'None':
+        currentWinner = 'Player 2'
+        playerScore[1] += 1
+        result = 'Player 2 wins'
+    elif playerChoice[1] == 'None':
+        currentWinner = 'Player 1'
+        playerScore[0] += 1
+        result = 'Player 1 wins'
+    elif playerChoice[0] == playerChoice[1]:
         currentWinner = ''
         result = 'Draw'
     elif (playerChoice[0] == 'Rock' and playerChoice[1] == 'Scissors') or \
