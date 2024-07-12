@@ -1,13 +1,9 @@
 # 모듈 로딩
-import tflite_runtime.interpreter as tflite
 import numpy as np
 import time
-import cv2 
-import tensorflow as tf
+import cv2
 import pygame
 import random
-import math
-import mediapipe as mp
 from config import SCREEN_WIDTH, SCREEN_HEIGHT, FONT_SIZE, WHITE, BLACK, RED, GREEN, COUNTDOWN, POINTTOWIN
 import process
 
