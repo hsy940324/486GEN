@@ -3,7 +3,7 @@ import tensorflow as tf
 import numpy as np
 import mediapipe as mp
 import cv2 
-from config import IMG_SIZE
+from config import IMG_SIZE, threshold
 
 # TF 모델 로딩
 # modelPath = "cropped_custom_data_with_none_model_64.h5"
@@ -72,6 +72,9 @@ def get_prediction(hand_img):
     output_data = interpreter.get_tensor(output_details[0]['index'])[0]
 
     label = np.argmax(output_data)
+    if output_data[label] < threshold:
+        label = 3
+
     return label
 
 def processImage(frame, cors, idxList):
