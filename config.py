@@ -11,7 +11,7 @@ GREEN = (0, 255, 0)
 
 # 학습 설정
 IMG_SIZE = 64
-threshold = 0.8
+threshold = 0.98
 
 # 게임 설정
 COUNTDOWN = 4
