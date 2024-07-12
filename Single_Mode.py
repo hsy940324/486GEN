@@ -127,7 +127,7 @@ def printResult(screen, font):
     result_text = font.render(f'콤퓨타: {computerChoice}', True, WHITE)
     screen.blit(result_text, (SCREEN_WIDTH//2+10, 40))
     if currentWinner:
-        result_text = font.render(f'{currentWinner} 승리!', True, BLACK)
+        result_text = font.render(f'{currentWinner.replace("Player","놀이자")} 승리!', True, BLACK)
         screen.blit(result_text, (SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
     else:
         result_text = font.render('비김!', True, BLACK)
@@ -159,7 +159,7 @@ def run():
 
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     font_path = './game_font.ttf'
-    font = pygame.font.Font(font_path, FONT_SIZE)
+    font = pygame.font.Font(font_path, 30)
     pygame.display.set_caption("가위 바위 보")
     clock = pygame.time.Clock()
 

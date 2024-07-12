@@ -132,10 +132,10 @@ def printResult(screen, font):
 
     if currentWinner:
         x_loc = 0 if currentWinner == "Player 1" else SCREEN_WIDTH//2 + 50
-        result_text = font.render(f'{currentWinner} Win!', True, RED)
+        result_text = font.render(f'{currentWinner.replace("Player","놀이자")} 승리!', True, RED)
         screen.blit(result_text, (x_loc, SCREEN_HEIGHT//2))
     else:
-        result_text = font.render('Draw!', True, BLACK)
+        result_text = font.render('비김!', True, BLACK)
         screen.blit(result_text, (SCREEN_WIDTH//2 - 40, SCREEN_HEIGHT//2))
 
     if reStartTime == 0:
@@ -144,12 +144,12 @@ def printResult(screen, font):
 def printScore(screen, font):
     global playerScore
 
-    result_text = font.render(f'Player 1', True, BLACK)
+    result_text = font.render(f'놀이자 1', True, BLACK)
     pygame.draw.rect(screen, WHITE, (0, 0, SCREEN_WIDTH, 50))
     # pygame.draw.rect(screen, WHITE, (0, SCREEN_HEIGHT - 60, SCREEN_WIDTH, 60))
 
     screen.blit(result_text, (10, 10))
-    result_text = font.render(f'Player 2', True, BLACK)
+    result_text = font.render(f'놀이자 2', True, BLACK)
     screen.blit(result_text, (SCREEN_WIDTH//2 + 170, 10))
 
     score_text = font.render(f'{playerScore[0]} : {playerScore[1]}', True, BLACK)
@@ -169,7 +169,7 @@ def run():
 
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     font_path = './game_font.ttf'
-    font = pygame.font.Font(font_path, FONT_SIZE)
+    font = pygame.font.Font(font_path, 30)
     pygame.display.set_caption("Rock Paper Scissors Game")
     clock = pygame.time.Clock()
 
