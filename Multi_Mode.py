@@ -125,16 +125,18 @@ def printResult(screen, font):
     global reStartTime
     global playerScore
 
-    result_text = font.render(f'Player 1: {playerChoice[0]}', True, WHITE)
-    screen.blit(result_text, (10, 40))
-    result_text = font.render(f'Player 2: {playerChoice[1]}', True, WHITE)
-    screen.blit(result_text, (SCREEN_WIDTH//2+10, 40))
+    result_text = font.render(f'{playerChoice[0]}', True, BLACK)
+    screen.blit(result_text, (100, 70))
+    result_text = font.render(f'{playerChoice[1]}', True, BLACK)
+    screen.blit(result_text, (SCREEN_WIDTH//2+50, 70))
+
     if currentWinner:
-        result_text = font.render(f'{currentWinner} win!', True, BLACK)
-        screen.blit(result_text, (SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
+        x_loc = 0 if currentWinner == "Player 1" else SCREEN_WIDTH//2 + 50
+        result_text = font.render(f'{currentWinner} Win!', True, RED)
+        screen.blit(result_text, (x_loc, SCREEN_HEIGHT//2))
     else:
         result_text = font.render('Draw!', True, BLACK)
-        screen.blit(result_text, (SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
+        screen.blit(result_text, (SCREEN_WIDTH//2 - 40, SCREEN_HEIGHT//2))
 
     if reStartTime == 0:
         reStartTime = time.time() + 2
@@ -142,10 +144,16 @@ def printResult(screen, font):
 def printScore(screen, font):
     global playerScore
 
-    result_text = font.render(f'Player 1 score: {playerScore[0]}', True, WHITE)
+    result_text = font.render(f'Player 1', True, BLACK)
+    pygame.draw.rect(screen, WHITE, (0, 0, SCREEN_WIDTH, 50))
+    # pygame.draw.rect(screen, WHITE, (0, SCREEN_HEIGHT - 60, SCREEN_WIDTH, 60))
+
     screen.blit(result_text, (10, 10))
-    result_text = font.render(f'Player 2 score: {playerScore[1]}', True, WHITE)
-    screen.blit(result_text, (SCREEN_WIDTH//2+10, 10))
+    result_text = font.render(f'Player 2', True, BLACK)
+    screen.blit(result_text, (SCREEN_WIDTH//2 + 170, 10))
+
+    score_text = font.render(f'{playerScore[0]} : {playerScore[1]}', True, BLACK)
+    screen.blit(score_text, (SCREEN_WIDTH//2 - 30, 10))
 
 def run():
     global playerClassIdx
@@ -221,13 +229,14 @@ def run():
 
         if isGameEnd:
             result_text = font.render(f'Winner : {finalWinner}', True, BLACK)
-            screen.blit(result_text, (SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
+            screen.blit(result_text, (SCREEN_WIDTH//2 - 120, SCREEN_HEIGHT//2))
 
         if not isGameStarting:
+            
             result_text = font.render('Press the space bar to start the game', True, BLACK)
             screen.blit(result_text, (10, SCREEN_HEIGHT - 50))
 
-        # Multi Mode Line Draw
+        # Multi Mode Line Draw 
         start_pos = (int(SCREEN_WIDTH//2),0)
         end_pos = (int(SCREEN_WIDTH//2), int(SCREEN_HEIGHT))
         pygame.draw.line(screen, BLACK, start_pos, end_pos, 5)
