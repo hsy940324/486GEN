@@ -47,8 +47,8 @@ def calGameResult():
     global classList
     
     # Game Logic
-    playerChoice[0] = classList[playerClassIdx[0]]
-    playerChoice[1] = classList[playerClassIdx[1]]
+    playerChoice[0] = classList[playerClassIdx[1]] # 역순으로 저장해야함
+    playerChoice[1] = classList[playerClassIdx[0]]
     if playerChoice[0] == playerChoice[1]:
         currentWinner = ''
         result = 'Draw'
@@ -110,9 +110,9 @@ def printResult(screen, font):
 def printScore(screen, font):
     global playerScore
 
-    result_text = font.render(f'Player 1 Score: {playerScore[0]}', True, WHITE)
+    result_text = font.render(f'Player 1 score: {playerScore[0]}', True, WHITE)
     screen.blit(result_text, (10, 10))
-    result_text = font.render(f'Player 2 Score: {playerScore[1]}', True, WHITE)
+    result_text = font.render(f'Player 2 score: {playerScore[1]}', True, WHITE)
     screen.blit(result_text, (SCREEN_WIDTH//2+10, 10))
 
 def run():
@@ -157,9 +157,6 @@ def run():
         fps = 1/(curTime - startTime)
         startTime = curTime
 
-        # Multi Mode Line Draw
-        start_pos = (int(SCREEN_WIDTH//2),0)
-        end_pos = (int(SCREEN_WIDTH//2), int(SCREEN_HEIGHT))
 
         if ret:
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -193,8 +190,13 @@ def run():
             result_text = font.render(f'Winner : {finalWinner}', True, BLACK)
             screen.blit(result_text, (SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
 
-        printScore(screen,font)
+        # Multi Mode Line Draw
+        start_pos = (int(SCREEN_WIDTH//2),0)
+        end_pos = (int(SCREEN_WIDTH//2), int(SCREEN_HEIGHT))
         pygame.draw.line(screen, BLACK, start_pos, end_pos, 5)
+
+        printScore(screen,font)
+
         pygame.display.flip()
         clock.tick(30)
 
